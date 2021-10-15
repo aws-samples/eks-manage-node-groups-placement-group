@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-placementgroup-enabled
+  labels:
+    app: cluster-placementgroup-enabled
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cluster-placementgroup-enabled
+  template:
+    metadata:
+      labels:
+        app: cluster-placementgroup-enabled
+    spec:
+      nodeSelector:
+        placementGroup: "true"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - cluster-placementgroup-enabled
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: iperf
+        image: networkstatic/iperf3
+        args: ['-s']
+        ports:
+        - containerPort: 5201
+          name: server
+      terminationGracePeriodSeconds: 0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-placementgroup-disabled
+  labels:
+    app: cluster-placementgroup-disabled
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cluster-placementgroup-disabled
+  template:
+    metadata:
+      labels:
+        app: cluster-placementgroup-disabled
+    spec:
+      nodeSelector:
+        placementGroup: "false"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - cluster-placementgroup-disabled
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: iperf
+        image: networkstatic/iperf3
+        args: ['-s']
+        ports:
+        - containerPort: 5201
+          name: server
+      terminationGracePeriodSeconds: 0
