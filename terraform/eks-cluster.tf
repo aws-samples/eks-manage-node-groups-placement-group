@@ -20,6 +20,7 @@ module "eks" {
   cluster_name    = local.cluster_name
   cluster_version = "1.21"
   subnets         = module.vpc.public_subnets
+  cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   tags = {
     Environment = "testing"
