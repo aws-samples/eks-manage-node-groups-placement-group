@@ -18,6 +18,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as eks from '@aws-cdk/aws-eks';
 import * as ec2 from '@aws-cdk/aws-ec2';
+import { setupClusterLogging } from './cluster-logging';
 
 /**
  * Launch the number of instances per group at once to ensure the availability of landing in one `cluster` placement group 
@@ -79,5 +80,10 @@ export class CdkStack extends cdk.Stack {
         placementGroup: 'false',
       },
     });
+
+    /**
+     * Enable cluster logging
+     */
+    setupClusterLogging(this, cluster);
   }
 }
