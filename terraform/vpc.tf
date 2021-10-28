@@ -21,7 +21,11 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  depends_on = [
+    module.vpc.vpc_id
+  ]
+}
 
 // Select the Subnet from an AZ in the VPC being created.
 data "aws_subnet" "selected" {

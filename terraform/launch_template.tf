@@ -45,7 +45,6 @@ resource "aws_launch_template" "default" {
   }
 
   vpc_security_group_ids = [
-    aws_security_group.all_worker_mgmt.id,
     module.eks.worker_security_group_id
   ]
 
