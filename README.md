@@ -9,7 +9,7 @@ Please refer to the below two documents for cdk code and terraform code:
 
 ## Solution Overview
 
-In this repository, we create an Amazon EKS cluster with two managed node groups (One with Placement Group Enabled, and the other without Placement Group Enabled), each node group contains two c5.large instances. The EKS cluster is attached to a newly created VPC. All application workloads are running in the VPC’s public subnets for demo purposes. When you create a new cluster, Amazon EKS creates an endpoint for the managed Kubernetes API server that you use to communicate with your cluster. For your convenience, in this blog, we make such Amazon EKS cluster’s Kubernetes API server endpoint public, so that it’s easier for you to validate the solution in your AWS account.
+In this repository, we create an Amazon EKS cluster with two managed node groups (One with Placement Group Enabled, and the other without Placement Group Enabled), each node group contains two c5.large instances. The EKS cluster is attached to a newly created VPC. All application workloads are running in the VPC’s public subnets for demo purposes. When you create a new cluster, Amazon EKS creates an endpoint for the managed Kubernetes API server that you use to communicate with your cluster. For your convenience, in this blog, we make such Amazon EKS cluster’s Kubernetes API server endpoint public, so that it’s easier for you to validate the solution in your AWS accounts.
 
 In the performance testings, we create two [iperf3](https://hub.docker.com/r/networkstatic/iperf3) deployments in two different node groups and test the throughput and latency performance between the two nodes within the same node group. The following diagram shows the high-level architecture.
 
