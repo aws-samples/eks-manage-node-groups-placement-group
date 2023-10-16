@@ -7,3 +7,9 @@ variable "cluster_version" {
   type        = string
   default     = "1.28"
 }
+
+variable "instance_type" {
+  description = "Instance type for EC2 node"
+  type        = string
+  default     = "c5.large"
+}

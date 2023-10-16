@@ -46,10 +46,10 @@ module "vpc" {
   cidr = "10.128.0.0/16"
   azs  = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1]] // In this example only provision two public subnets
   #private_subnets      = ["10.128.1.0/24", "10.128.2.0/24", "10.128.3.0/24"]   
-  public_subnets       = ["10.128.4.0/24", "10.128.5.0/24"]
-  enable_nat_gateway   = false
-  single_nat_gateway   = false
-  enable_dns_hostnames = true
+  public_subnets          = ["10.128.4.0/24", "10.128.5.0/24"]
+  enable_nat_gateway      = false
+  single_nat_gateway      = false
+  enable_dns_hostnames    = true
   map_public_ip_on_launch = true
 
   tags = {

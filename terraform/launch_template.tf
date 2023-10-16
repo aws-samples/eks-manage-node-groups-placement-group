@@ -44,8 +44,6 @@ resource "aws_launch_template" "default" {
     group_name        = aws_placement_group.eks.name
   }
 
-  //vpc_security_group_ids =  [data.aws_eks_cluster.cluster.vpc_config.cluster_security_group_id]
-
   # vpc_security_group_ids = [
   #   module.eks.worker_security_group_id
   # ]

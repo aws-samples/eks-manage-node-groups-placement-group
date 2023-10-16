@@ -51,10 +51,18 @@ commands will detect it and remind you to do so if necessary.
 ```
 
 ### Deploy the Terraform 
+Apply the vpc module first, then the rest
 
 ```bash
 $ terraform apply -target="module.vpc"
-$ terraform apply -target="module.eks"
+$ terraform apply 
+```
+
+### Update the kubeconfig
+
+```bash
+aws sts get-caller-identity
+aws eks update-kubeconfig --region us-west-2 --name PlacementGroupDemoEKS-QKyW
 ```
 
 ### Check the Kubectl Nodes
