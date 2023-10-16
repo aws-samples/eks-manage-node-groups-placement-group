@@ -2,40 +2,42 @@
 
 This repository is to create an EKS cluster with two managed node groups: one with a placementgroup launch template, and the other without placementgroup with newly a created VPC with CIDR range 10.192.0.0/16 with 3 public subnets. Both EKS managed node groups are properly labelled. 
 
+Note: this is prototype-quality code intended to demonstrate performance on an EKS cluster using node placement groups.   
+This terraform is not suited for production use.
+
 ## How to create the cluster
+
+This cluster comes with a VPC to ensure a stable, testable experience.   Typically the VPC will be defined in a separate terraform
+workspace, it is combined in this case to make installation easier.
+
+https://aws-ia.github.io/terraform-aws-eks-blueprints/#terraform-caveats
+
 
 ### Perform terraform init
 
 ```bash
 $ terraform init
+Initializing modules...
+
 Initializing the backend...
 
 Initializing provider plugins...
-- Reusing previous version of hashicorp/kubernetes from the dependency lock file
+- Reusing previous version of hashicorp/tls from the dependency lock file
+- Reusing previous version of hashicorp/cloudinit from the dependency lock file
 - Reusing previous version of hashicorp/aws from the dependency lock file
 - Reusing previous version of hashicorp/random from the dependency lock file
-- Reusing previous version of hashicorp/cloudinit from the dependency lock file
-- Reusing previous version of terraform-aws-modules/http from the dependency lock file
 - Reusing previous version of hashicorp/local from the dependency lock file
 - Reusing previous version of hashicorp/null from the dependency lock file
-- Installing hashicorp/kubernetes v2.5.0...
-- Installed hashicorp/kubernetes v2.5.0 (signed by HashiCorp)
-- Installing hashicorp/aws v3.60.0...
-- Installed hashicorp/aws v3.60.0 (signed by HashiCorp)
-- Installing hashicorp/random v3.1.0...
-- Installed hashicorp/random v3.1.0 (signed by HashiCorp)
-- Installing hashicorp/cloudinit v2.2.0...
-- Installed hashicorp/cloudinit v2.2.0 (signed by HashiCorp)
-- Installing terraform-aws-modules/http v2.4.1...
-- Installed terraform-aws-modules/http v2.4.1 (self-signed, key ID B2C1C0641B6B0EB7)
-- Installing hashicorp/local v2.1.0...
-- Installed hashicorp/local v2.1.0 (signed by HashiCorp)
-- Installing hashicorp/null v3.1.0...
-- Installed hashicorp/null v3.1.0 (signed by HashiCorp)
-
-Partner and community providers are signed by their developers.
-If you'd like to know more about provider signing, you can read about it here:
-https://www.terraform.io/docs/cli/plugins/signing.html
+- Reusing previous version of hashicorp/kubernetes from the dependency lock file
+- Reusing previous version of hashicorp/time from the dependency lock file
+- Using previously-installed hashicorp/local v2.1.0
+- Using previously-installed hashicorp/null v3.1.0
+- Using previously-installed hashicorp/kubernetes v2.10.0
+- Using previously-installed hashicorp/time v0.9.1
+- Using previously-installed hashicorp/tls v4.0.4
+- Using previously-installed hashicorp/cloudinit v2.3.2
+- Using previously-installed hashicorp/aws v4.57.0
+- Using previously-installed hashicorp/random v3.1.0
 
 Terraform has been successfully initialized!
 
@@ -48,35 +50,11 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
-### Perform Terraform Plan
-
-Check what resources are to be deploy with 
-```bash
-$ terraform plan
-provider.aws.region
-  The region where AWS operations will take place. Examples
-  are us-east-1, us-west-2, etc.
-
-  Enter a value: ap-southeast-2
-  ...
-```
-
 ### Deploy the Terraform 
 
 ```bash
-$ terraform apply
-provider.aws.region
-  The region where AWS operations will take place. Examples
-  are us-east-1, us-west-2, etc.
-
-  Enter a value: ap-southeast-2
-  ...
-
-Do you want to perform these actions?
-  Terraform will perform the actions described above.
-  Only 'yes' will be accepted to approve.
-
-  Enter a value: yes
+$ terraform apply -target="module.vpc"
+$ terraform apply -target="module.eks"
 ```
 
 ### Check the Kubectl Nodes

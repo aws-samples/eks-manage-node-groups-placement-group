@@ -15,11 +15,33 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+locals {
+  cluster_name = "PlacementGroupDemoEKS-${random_string.suffix.result}"
+}
+
+resource "random_string" "suffix" {
+  length  = 4
+  special = false
+}
+
+// Select the Subnet from an AZ in the VPC being created.
+
+data "aws_subnet" "selected" {
+  availability_zone = data.aws_availability_zones.available.names[0]
+
+  filter {
+    name   = "tag:Name"
+    values = ["terraform-eks-demo-public"]
+  }
+}
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
-  cluster_version = "1.21"
-  subnets         = module.vpc.public_subnets
+  cluster_version = var.cluster_version
+  subnet_ids      = module.vpc.public_subnets
+
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   tags = {
@@ -30,14 +52,14 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  node_groups_defaults = {
-      ami_type  = "AL2_x86_64"
-      disk_size = 50
-    }
+  eks_managed_node_group_defaults = {
+    ami_type  = "AL2_x86_64"
+    disk_size = 50
+  }
 
-  node_groups = {
+  eks_managed_node_groups = {
     placementgroup01 = {
-      name_prefix = "placementgroup"
+      name_prefix      = "placementgroup"
       desired_capacity = 2
       max_capacity     = 2
       min_capacity     = 2
@@ -48,7 +70,7 @@ module "eks" {
       subnets = [split("/", data.aws_subnet.selected.arn)[1]]
 
       instance_types = ["c5.large"]
-            
+
       k8s_labels = {
         placementGroup = "true"
       }
@@ -58,7 +80,7 @@ module "eks" {
       }
     },
     nonplacementgroup02 = {
-      name_prefix = "non-placementgroup"
+      name_prefix      = "non-placementgroup"
       desired_capacity = 2
       max_capacity     = 5
       min_capacity     = 2
@@ -66,7 +88,7 @@ module "eks" {
       instance_types = ["c5.large"]
       // This is to get the subnet id from the subnet ARN, as the data.aws_subnet does not have attribute of subnet id.
       subnets = [split("/", data.aws_subnet.selected.arn)[1]]
-      
+
       k8s_labels = {
         placementGroup = "false"
       }
@@ -78,10 +100,3 @@ module "eks" {
   }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_id
-}
