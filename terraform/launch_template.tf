@@ -19,7 +19,7 @@ resource "aws_placement_group" "eks" {
   name     = "eks-placement-group"
   strategy = "cluster"
   tags = {
-    placementGroup = "true",
+    placementGroup  = "true",
     applicationType = "eks"
   }
 }
@@ -35,18 +35,18 @@ resource "aws_launch_template" "default" {
 
     ebs {
       volume_size = 20
-      encrypted = true
+      encrypted   = true
     }
   }
 
   placement {
     availability_zone = data.aws_availability_zones.available.names[0]
-    group_name = aws_placement_group.eks.name
+    group_name        = aws_placement_group.eks.name
   }
 
-  vpc_security_group_ids = [
-    module.eks.worker_security_group_id
-  ]
+  # vpc_security_group_ids = [
+  #   module.eks.worker_security_group_id
+  # ]
 
   tag_specifications {
     resource_type = "instance"
@@ -55,7 +55,7 @@ resource "aws_launch_template" "default" {
       placementGroup = "true"
     }
   }
-  
+
   # Tag the LT itself
   tags = {
     placementGroup = "true"
@@ -64,5 +64,5 @@ resource "aws_launch_template" "default" {
   lifecycle {
     create_before_destroy = true
   }
-  
+
 }
